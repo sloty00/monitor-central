@@ -33,7 +33,7 @@
 
     async function obtenerLenguaje(repo) {
         try {
-            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo}/languages`);
+            const res = await fetch(`https://api.github.com/repos/${sloty00}/${repo}/languages`);
             const data = await res.json();
             return Object.keys(data).length > 0 ? Object.keys(data).reduce((a, b) => data[a] > data[b] ? a : b) : "N/A";
         } catch { return "N/A"; }
