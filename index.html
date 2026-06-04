@@ -105,7 +105,6 @@
     const misProyectos = ["Login-Basico-con-base-de-datos-Java", "Login-con-JWT-y-SQL", "Login-con-Java-JWT-MySQL-Firebase", "CASS-Workflow-Personal", "MiradorFrutillar"];
     const grid = document.getElementById('monitor-grid');
 
-    // Función para obtener el lenguaje principal vía API de GitHub
     async function obtenerLenguaje(repo) {
         try {
             const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo}/languages`);
@@ -120,15 +119,20 @@
         grid.innerHTML = ""; 
 
         for (const repo of misProyectos) {
-            const urlJson = `https://${GITHUB_USER}.github.io/${repo}/reporte-cicd.json`;
-            const lang = await obtenerLenguaje(repo); // Detección automática
+            const urlJson = `https://${GITHUB_USER}.github.io/${repo}/reporte-cicd.json?t=${Date.now()}`;
+            const lang = await obtenerLenguaje(repo);
 
             try {
                 const response = await fetch(urlJson);
                 if (!response.ok) throw new Error();
                 const data = await response.json();
                 
-                const isSuccess = data.pipeline.estado === "SUCCESS";
+                // Lógica de seguridad: Si no existen datos de tests, asignamos valores por defecto
+                const exitosos = data.tests?.exitosos ?? 0;
+                const fallidos = data.tests?.fallidos ?? 0;
+                const cobertura = data.tests?.cobertura_codigo ?? "0%";
+                
+                const isSuccess = data.pipeline.estado === "SUCCESS" || data.pipeline.estado === "success";
                 const colorClass = isSuccess ? "badge-success" : "badge-failed";
                 
                 grid.innerHTML += `
@@ -145,8 +149,8 @@
                         
                         <div class="stats">
                             <div style="font-size: 0.75rem; margin-bottom: 5px; color: #fff;">RESULTADO DE TESTS</div>
-                            <div style="font-size: 1rem;">✅ ${data.tests.exitosos} / ❌ ${data.tests.fallidos}</div>
-                            <div style="font-size: 0.8rem; margin-top: 5px;">Cobertura: <strong>${data.tests.cobertura_codigo}</strong></div>
+                            <div style="font-size: 1rem;">✅ ${exitosos} / ❌ ${fallidos}</div>
+                            <div style="font-size: 0.8rem; margin-top: 5px;">Cobertura: <strong>${cobertura}</strong></div>
                         </div>
 
                         <div class="detalles">
