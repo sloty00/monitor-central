@@ -1,3 +1,6 @@
+Aquí tienes el código completo. He integrado el campo "Detalles" que tenías originalmente, pero lo he estilizado para que se integre perfectamente con el diseño tipo "Command Center". También le he dado un formato más limpio y organizado dentro de la tarjeta para que no rompa la estética moderna.
+
+HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,6 +17,7 @@
             --accent-success: #00ff9d;
             --accent-failed: #ff3e3e;
             --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
         }
 
         body {
@@ -27,7 +31,7 @@
         }
 
         h1 { font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
-        .subtitle { color: #64748b; margin-bottom: 40px; }
+        .subtitle { color: var(--text-dim); margin-bottom: 40px; }
 
         .grid {
             display: grid;
@@ -42,8 +46,8 @@
             border-radius: 16px;
             padding: 24px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
@@ -56,45 +60,46 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .title { font-size: 1.2rem; font-weight: 600; }
         
         .badge {
-            padding: 6px 12px;
-            border-radius: 50px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: 800;
         }
 
-        .badge-success { border: 1px solid var(--accent-success); color: var(--accent-success); box-shadow: 0 0 10px rgba(0,255,157,0.2); }
-        .badge-failed { border: 1px solid var(--accent-failed); color: var(--accent-failed); box-shadow: 0 0 10px rgba(255,62,62,0.2); }
+        .badge-success { border: 1px solid var(--accent-success); color: var(--accent-success); }
+        .badge-failed { border: 1px solid var(--accent-failed); color: var(--accent-failed); }
 
+        .info-row { font-size: 0.85rem; color: var(--text-dim); margin: 4px 0; }
+        
         .stats {
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             padding: 15px;
             border-radius: 12px;
             border-left: 3px solid #334155;
-            margin-top: 15px;
+            margin: 15px 0;
         }
 
-        .progress-bar {
-            height: 4px;
-            background: #1e293b;
-            border-radius: 2px;
-            margin-top: 10px;
+        .detalles {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-style: italic;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: auto;
         }
-
-        .progress-fill { height: 100%; border-radius: 2px; transition: width 1s ease-in-out; }
     </style>
 </head>
 <body>
 
     <h1>📡 CI/CD Command Center</h1>
-    <p class="subtitle">Monitoreo en tiempo real de flujos de despliegue</p>
+    <p class="subtitle">Monitoreo de despliegue en tiempo real</p>
 
     <div class="grid" id="monitor-grid"></div>
 
@@ -123,15 +128,19 @@
                             <span class="title">${data.proyecto}</span>
                             <span class="badge ${colorClass}">${data.pipeline.estado}</span>
                         </div>
-                        <div style="font-size: 0.85rem; color: #94a3b8;">Commit: ${data.commit.substring(0,7)}</div>
+                        
+                        <div class="info-row"><strong>Rama:</strong> ${data.rama}</div>
+                        <div class="info-row"><strong>Commit:</strong> ${data.commit.substring(0,8)}</div>
+                        <div class="info-row"><strong>Fecha:</strong> ${new Date(data.pipeline.fecha_ejecucion).toLocaleString()}</div>
                         
                         <div class="stats">
-                            <div style="font-size: 0.8rem; margin-bottom: 5px;">ESTADO DE PRUEBAS</div>
-                            <div style="font-size: 1.2rem; font-weight: bold;">✅ ${data.tests.exitosos} / ❌ ${data.tests.fallidos}</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${data.tests.cobertura_codigo}; background: ${isSuccess ? 'var(--accent-success)' : 'var(--accent-failed)'}"></div>
-                            </div>
-                            <div style="font-size: 0.7rem; margin-top: 5px; color: #64748b;">Cobertura: ${data.tests.cobertura_codigo}</div>
+                            <div style="font-size: 0.75rem; margin-bottom: 5px; color: #fff;">RESULTADO DE TESTS</div>
+                            <div style="font-size: 1rem;">✅ ${data.tests.exitosos} / ❌ ${data.tests.fallidos}</div>
+                            <div style="font-size: 0.8rem; margin-top: 5px;">Cobertura: <strong>${data.tests.cobertura_codigo}</strong></div>
+                        </div>
+
+                        <div class="detalles">
+                            ${data.detalles}
                         </div>
                     </div>
                 `;
@@ -142,7 +151,7 @@
                             <span class="title">${repo}</span>
                             <span class="badge" style="border:1px solid #444; color:#666;">OFFLINE</span>
                         </div>
-                        <p style="font-size: 0.85rem; color: #475569;">No se recibió señal del pipeline.</p>
+                        <p style="font-size: 0.85rem; color: #475569;">Esperando reporte del pipeline...</p>
                     </div>
                 `;
             }
