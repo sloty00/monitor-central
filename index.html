@@ -1,3 +1,6 @@
+Aquí tienes el código completo integrado con la función de detección automática de lenguajes de GitHub. He mantenido todo tu estilo estético y he añadido la fila de "Stack" dentro de la tarjeta para que se vea profesional.
+
+HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -105,11 +108,23 @@
     const misProyectos = ["Login-con-Java-JWT-MySQL-Firebase", "CASS-Workflow-Personal", "MiradorFrutillar"];
     const grid = document.getElementById('monitor-grid');
 
+    // Función para obtener el lenguaje principal vía API de GitHub
+    async function obtenerLenguaje(repo) {
+        try {
+            const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo}/languages`);
+            const data = await response.json();
+            return Object.keys(data).length > 0 
+                ? Object.keys(data).reduce((a, b) => data[a] > data[b] ? a : b) 
+                : "N/A";
+        } catch { return "N/A"; }
+    }
+
     async function cargarReportes() {
         grid.innerHTML = ""; 
 
         for (const repo of misProyectos) {
             const urlJson = `https://${GITHUB_USER}.github.io/${repo}/reporte-cicd.json`;
+            const lang = await obtenerLenguaje(repo); // Detección automática
 
             try {
                 const response = await fetch(urlJson);
@@ -126,6 +141,7 @@
                             <span class="badge ${colorClass}">${data.pipeline.estado}</span>
                         </div>
                         
+                        <div class="info-row"><strong>Stack:</strong> <span style="color: var(--accent-success)">${lang}</span></div>
                         <div class="info-row"><strong>Rama:</strong> ${data.rama}</div>
                         <div class="info-row"><strong>Commit:</strong> ${data.commit.substring(0,8)}</div>
                         <div class="info-row"><strong>Fecha:</strong> ${new Date(data.pipeline.fecha_ejecucion).toLocaleString()}</div>
@@ -148,6 +164,7 @@
                             <span class="title">${repo}</span>
                             <span class="badge" style="border:1px solid #444; color:#666;">OFFLINE</span>
                         </div>
+                        <div class="info-row"><strong>Stack:</strong> ${lang}</div>
                         <p style="font-size: 0.85rem; color: #475569;">Esperando reporte del pipeline...</p>
                     </div>
                 `;
