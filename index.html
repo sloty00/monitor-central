@@ -1,89 +1,117 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Qube Tech | Command Center</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        :root {
-            --bg: #050505; --glass: rgba(255, 255, 255, 0.03);
-            --accent-success: #00ff9d; --accent-failed: #ff3e3e;
-            --text-main: #e2e8f0; --text-dim: #94a3b8;
-        }
-        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; padding: 40px; margin: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
-        .card { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; transition: 0.3s; }
-        .card:hover { border-color: var(--accent-success); transform: translateY(-5px); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
-        .history-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
-        .stats-box { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 0.8rem; }
-        .progress-bar { height: 4px; background: #222; border-radius: 2px; margin-top: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--accent-success); }
-    </style>
-</head>
-<body>
+<!DOCTYPE html><html lang="es"><head>
 
-    <h1>📡 Qube Tech | Command Center</h1>
-    <div class="grid" id="monitor-grid"></div>
+<meta charset="UTF-8">
 
-<script>
-    const GITHUB_USER = "sloty00"; 
-    const misProyectos = ["Login-con-Java-JWT-MySQL-Firebase", "CASS-Workflow-Personal", "MiradorFrutillar"];
+<title>Qube Tech | Command Center</title>
 
-    async function obtenerLenguaje(repo) {
-        try {
-            const res = await fetch(`https://api.github.com/repos/${sloty00}/${repo}/languages`);
-            const data = await res.json();
-            return Object.keys(data).length > 0 ? Object.keys(data).reduce((a, b) => data[a] > data[b] ? a : b) : "N/A";
-        } catch { return "N/A"; }
-    }
+<style>
 
-    async function cargarReportes() {
-        const grid = document.getElementById('monitor-grid');
-        grid.innerHTML = "";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
-        for (const repo of misProyectos) {
-            const lang = await obtenerLenguaje(repo);
-            try {
-                const res = await fetch(`https://${GITHUB_USER}.github.io/${repo}/reporte-cicd.json`);
-                const data = await res.json();
-                
-                const hist = data.pipeline.historial.map(s => 
-                    `<span class="history-dot" style="background:${s === 'SUCCESS' ? 'var(--accent-success)' : 'var(--accent-failed)'}"></span>`
-                ).join('');
+:root {
 
-                grid.innerHTML += `
-                    <div class="card">
-                        <div class="header">
-                            <span style="font-weight:800; font-size: 1.1rem;">${data.proyecto}</span>
-                            <span class="badge" style="border:1px solid #fff">${data.pipeline.entorno}</span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--text-dim);">
-                            Stack: ${lang} | Rama: ${data.rama} | Commit: ${data.commit.substring(0,7)}
-                        </div>
-                        <div class="stats-box">
-                            <div style="margin-bottom:8px">Historial: ${hist}</div>
-                            <div style="display:flex; justify-content:space-between">
-                                <span>✅ ${data.tests.exitosos} / ❌ ${data.tests.fallidos}</span>
-                                <span>⏱ ${data.pipeline.duracion_segundos}s</span>
-                            </div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: ${data.tests.cobertura_codigo}"></div></div>
-                            <div style="font-size: 0.7rem; margin-top:4px">Cobertura: ${data.tests.cobertura_codigo}</div>
-                        </div>
-                        <div style="font-size: 0.75rem; font-style: italic; color: var(--text-dim);">${data.detalles}</div>
-                    </div>
-                `;
-            } catch (e) {
-                grid.innerHTML += `
-                    <div class="card">
-                        <div class="header"><h3>${repo}</h3><span class="badge" style="background:#333">OFFLINE</span></div>
-                        <p style="color:var(--text-dim)">Sin reporte disponible.</p>
-                    </div>`;
-            }
-        }
-    }
-    cargarReportes();
-</script>
-</body>
-</html>
+--bg: #050505; --glass: rgba(255, 255, 255, 0.03);
+
+--accent-success: #00ff9d; --accent-failed: #ff3e3e;
+
+--text-main: #e2e8f0; --text-dim: #94a3b8;
+
+}
+
+body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; padding: 40px; margin: 0; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
+
+.card { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; transition: 0.3s; }
+
+.card:hover { border-color: var(--accent-success); transform: translateY(-5px); }
+
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+.badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+
+.history-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+
+.stats-box { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 0.8rem; }
+
+</style></head><body>
+
+
+
+<h1>📡 Qube Tech | Command Center</h1>
+
+<div class="grid" id="monitor-grid"></div><script>
+
+const GITHUB_USER = "sloty00";
+
+const misProyectos = ["Login-con-Java-JWT-MySQL-Firebase", "CASS-Workflow-Personal", "MiradorFrutillar"];
+
+
+
+async function cargarReportes() {
+
+const grid = document.getElementById('monitor-grid');
+
+grid.innerHTML = "";
+
+
+
+for (const repo of misProyectos) {
+
+try {
+
+const res = await fetch(`https://${GITHUB_USER}.github.io/${repo}/reporte-cicd.json`);
+
+const data = await res.json();
+
+
+// Procesar historial de salud (puntos visuales)
+
+const hist = data.pipeline.historial.map(s =>
+
+`<span class="history-dot" style="background:${s === 'SUCCESS' ? 'var(--accent-success)' : 'var(--accent-failed)'}"></span>`
+
+).join('');
+
+
+
+grid.innerHTML += `
+
+<div class="card">
+
+<div class="header">
+
+<span style="font-weight:800">${data.proyecto}</span>
+
+<span class="badge" style="border:1px solid #fff">${data.pipeline.entorno}</span>
+
+</div>
+
+<div style="font-size: 0.8rem; color: var(--text-dim);">⏱ Duración: ${data.pipeline.duracion_segundos}s</div>
+
+<div class="stats-box">
+
+<div>Historial: ${hist}</div>
+
+<div style="margin-top:8px">✅ ${data.tests.exitosos} | ❌ ${data.tests.fallidos}</div>
+
+</div>
+
+<div style="font-size: 0.75rem; font-style: italic;">${data.detalles}</div>
+
+</div>
+
+`;
+
+} catch (e) {
+
+grid.innerHTML += `<div class="card"><h3>${repo}</h3><p>Pipeline Offline</p></div>`;
+
+}
+
+}
+
+}
+
+cargarReportes();</script></body></html> 
+
