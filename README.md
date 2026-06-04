@@ -4,7 +4,7 @@ Monitor CI/CD  de mis despliegues y proyectos en Github (Pipelines).
 El Monitor Central actúa como el núcleo de comando y orquestación del sistema. Es el punto único de visibilidad y gestión desde el cual se supervisan los flujos de datos y la integridad de los procesos operativos.
 
 ## Funcionalidades Clave
-Visibilidad en Tiempo Real: Proporciona un dashboard consolidado para el monitoreo de métricas críticas y el estado de las tareas.
+**Visibilidad en Tiempo Real:** Proporciona un dashboard consolidado para el monitoreo de métricas críticas y el estado de las tareas.
 
 **Gestión de Flujos:** Centraliza la toma de decisiones, permitiendo identificar fricciones en la ejecución de los procesos de desarrollo y despliegue.
 
